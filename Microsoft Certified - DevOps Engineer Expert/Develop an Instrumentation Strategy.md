@@ -259,7 +259,7 @@ Calls between services in different physical locations will still have network l
 
 Depending on the communication needs of an application, more round trips might be required. Each round trip comes with a latency tax, and each round trip adds to the overall latency.
 
-![Network Latency](Network-latency.png)
+![Network Latency](NetworkLatency.png)
 
 Apart from latency, applications may also have strict **bandwidth requirements**, particularly those that deal with rich multimedia content such as audio and video
 
@@ -270,7 +270,7 @@ Apart from latency, applications may also have strict **bandwidth requirements**
   - Use a CDN to cache content close to users
   - Use ExpressRoute for connectivity from on-premises to Azure
 
-![ExpressRoute Connection](3-expressroute-connection-overview.png)
+![ExpressRoute Connection](ExpressRouteConnection.png)
 
 #### Storage Performance
 
@@ -303,7 +303,7 @@ For instance, Azure Cache for Redis is a caching service on Azure that stores da
 
 Polyglot persistence is the use of **different data storage technologies** to handle your storage requirements.
 
-![Polyglot Persistence](Polyglot-persistence.png)
+![Polyglot Persistence](PolyglotPersistence.png)
 
 #### Application Performance
 
