@@ -74,7 +74,7 @@ You write a log query with the Kusto query language, which is also used by Azure
 
 #### App Center
 
-Visual Studio App Center lets you automate and manage the lifecycle of your iOS, Android, Windows, and macOS apps. Ship apps more frequently, at higher-quality, and with greater confidence.
+Visual Studio App Center lets you automate and manage the lifecycle of your **iOS, Android, Windows, and macOS apps**. Ship apps more frequently, at higher-quality, and with greater confidence.
 
 Visual Studio App Center is a collection of several common mobile development and cloud integration services, services such as continuous integration, continuous delivery, and automated UI testing.
 
@@ -250,6 +250,14 @@ Here are complex indicators:
 
 Applications on public datacenters typically run on **shared infrastructure**.
 
+While modern virtualization technologies provide an isolated environment in terms of application environment and security, they typically cannot ensure **performance isolation**.
+
+The performance of a resource at any given time is a function of the total load on the resources from all tenants, also known as the **interference** experienced from other tenants sharing the same hardware.
+
+Some cloud providers, such as Azure, provide clients the ability to provision certain types of resources (such as VMs) on **dedicated hardware**.
+
+A related aspect of multi-tenancy is the issue of **provisioning variation**, wherein identical requests for virtual resources on public clouds are not mapped identically onto physical resources, thereby causing a variation in performance
+
 #### Network Performance
 
 Network performance can have a dramatic impact on a user's experience.
@@ -262,6 +270,41 @@ Depending on the communication needs of an application, more round trips might b
 ![Network Latency](NetworkLatency.png)
 
 Apart from latency, applications may also have strict **bandwidth requirements**, particularly those that deal with rich multimedia content such as audio and video
+
+##### Tail Latency
+
+Most cloud applications are large, distributed systems that often rely on parallelization to reduce latency. A common technique is to fan out a request received at a root node (for example, a front-end web server) to many leaf nodes (back-end compute servers).
+
+![Tail Latency](TailLatency.png)
+
+For services that are expected to be "responsive" to retain their user base, heuristics show that responses are expected within 100 ms. As the number of servers required to resolve a query increases, **the overall time often depends on the worst-performing response from a leaf node to a root node.**
+
+###### Variability in the cloud
+
+To resolve the response time variability that leads to this tail latency problem, we must understand the sources of performance variability:
+
+- **Use of shared resources**: Many different VMs (and applications within those VMs) contend for a shared pool of compute resources.
+&rarr; it may make sense to use dedicated instances and periodically run benchmarks when idle, to ensure that it behaves correctly.
+- **Background daemons and maintenance**: We have already spoken about the need for background processes to create checkpoints, create backups, update logs, collect garbage, and handle resource cleanup. **These can degrade the performance of the system while executing.**
+&rarr; It is important to synchronize disruptions due to maintenance threads to minimize the impact on the flow of traffic.
+- **Queueing**: This variability is exacerbated if the OS uses a scheduling algorithm other than FIFO.
+&rarr; Studies have found that using FIFO scheduling in the OS reduces tail latency at the cost of lowering overall throughput of the system.
+- **All-to-all incast**: Since most network communication is over TCP, this leads to thousands of simultaneous requests and responses between the front-end web server and all the back-end processing nodes.
+&rarr; Large datacenters and cloud applications often need to use custom network drivers to dynamically adjust the TCP receiving window and the retransmission timer.
+- **Power and temperature management**: variability is a byproduct of other cost reduction techniques like using idle states or CPU frequency downscaling. A processor may often spend a non-trivial amount of time scaling up from an idle state.
+&rarr; Turning off such cost optimizations leads to higher energy usage and costs, but lower variability.
+
+###### Living with variability
+
+Some of the common techniques to deal with this variability are:
+
+- **"Good enough" results**: Often, when the system is waiting to receive results from thousands of nodes, the importance of any single result may be assumed to be quite low
+- **Canaries**: Another alternative that is often used for rare code paths is to test a request on a small subset of leaf nodes in order to test if it causes a crash or failure that can impact the entire system.
+- **Latency-induced probation and health checks**: system must periodically monitor the health and latency of each leaf node and not route requests to nodes that demonstrate low performance (due to maintenance or failures).
+- **Differential QoS**: Separate service classes can be created for interactive requests, allowing them to take priority in any queue.
+- **Request hedging**: This is a simple solution to reduce the impact of variability by forwarding the same request to multiple replicas and using the response that arrives first
+- **Speculative execution and selective replication**: Tasks on nodes that are particularly busy can be speculatively launched on other underutilized leaf nodes. This is especially effective if a failure in a particular node causes it to be overloaded.
+- **UX-based solutions**: Delay can be intelligently hidden from the user through a well-designed user interface that reduces the sensation of delay experienced by a human user.
 
 ##### Improve Network Performance
 
@@ -389,14 +432,17 @@ A number of principles follow from this tenet:
 
 ### Integrate user analytics (e.g., Application Insights funnels, Visual Studio App Center, TestFlight, Google Analytics)
 
-#### Application Insights Funnels
-
-Understanding the customer experience is of the utmost importance to your business.
-The progression through a series of steps in a web application is known as a **funnel**. You can use Azure Application Insights Funnels to gain insights into your users, and monitor step-by-step conversion rates.
-
-Before you create your funnel, **decide on the question you want to answer**
-
 #### Application Insights's User Behavior Analytics
+
+Azure Application Insights helps you gain powerful insights into how people use your app. Every time you update your app, you can assess how well it works for users.
+
+##### Users, Sessions, Events
+
+By filtering and splitting the data, you can uncover insights about the relative usage of different pages and features:
+
+- **Users tool**: How many people used your app and its features. Users are counted by using anonymous IDs stored in browser cookies.
+- **Sessions tool**: How many sessions of user activity have included certain pages and features of your app.
+- **Events tool**: How often certain pages and features of your app are used.
 
 ##### User Flow
 
@@ -408,6 +454,14 @@ The User Flows tool visualizes how users navigate between the pages and features
 - Are there places where users repeat the same action over and over?
 
 ![Application Insights UserFlow GUI](ApplicationInsightsUserFlowGUI.png)
+
+#### Funnels
+
+Understanding the customer experience is of the utmost importance to your business.
+The progression through a series of steps in a web application is known as a **funnel**. You can use Azure Application Insights Funnels to gain insights into your users, and monitor step-by-step conversion rates.
+
+Before you create your funnel, **decide on the question you want to answer**
+
 
 ## Integrate logging and monitoring solutions
 
@@ -512,6 +566,15 @@ Centralized logging can help you uncover hidden issues that might be difficult t
 
 For custom logs and metrics, you can use the HTTP Data Collector API to write data to Log Analytics from any REST API client or an Azure Logic App to write data from a custom workflow.
 
+###### Log Analytics Table to know
+
+- **Application Insights**
+  - Metrics in the ```availabilityResults``` table enable you to see the health of your web application as observed from points around the world.
+  - ```browserTimings``` table shows collected metrics by the Application Insights JavaScript SDK from real end-user browsers.
+  - ```exceptions``` table reflects the number of thrown exceptions from your application code running in browser.
+  - ```dependencies``` table reflects The number of failed dependency calls.
+  - The ```dependencies``` table shows the number of logged exceptions.
+
 #### Application performance management
 
 Deep application issues are often tricky to track down. This type of scenario is when it can be beneficial to integrate telemetry into your application by using an **application performance management (APM) solution**.
@@ -561,6 +624,26 @@ Events represent any kind of event that occurs in your application that you're i
 Metrics are numeric measurements taken independently of any event, typically on an interval. Metrics are **pre-aggregated**. Application Insights stores and transmits a statistical summary of measurements taken over time, not the exact value of each measurement.
 
 Metrics can also be **multidimensional**. Multidimensional metrics record multiple values into a single metric. These properties can be used to segment, filter, and group the data in visualizations.
+
+#### Azure SQL Analytics
+
+Azure SQL Analytics is an advanced cloud monitoring solution for monitoring performance of all of your Azure SQL databases at scale and across multiple subscriptions in a single view.
+
+It uses Azure Diagnostic metrics along with Azure Monitor views to present data about all your Azure SQL databases in a single Log Analytics workspace.
+
+![SQL Database View](SQLDatabaseView.png)
+
+*Note that you must enable proper metrics or logs on your SQL resources to be streamed to Log Analytics workspace.*
+
+##### Azure SQL Database Intelligent Insights
+
+Intelligent Insights in Azure SQL Database and Azure SQL Managed Instance lets you know what is happening with your database performance.
+
+Intelligent Insights uses built-in intelligence to continuously monitor database usage through artificial intelligence and detect disruptive events that cause poor performance. Once detected, a detailed analysis is performed that generates an Intelligent Insights resource log (called SQLInsights) with an intelligent assessment of the issue.
+
+Intelligent Insights analyzes database performance by **comparing the database workload from the last hour with the past seven-day baseline** workload.
+
+![Intelligent Insights Concept](IntelligentInsightsConcept.png)
 
 ### Configure and integrate container monitoring (Azure Monitor, Prometheus, etc.)
 
@@ -615,6 +698,21 @@ By viewing an Application Insights resource in the Azure portal, you can visuali
 
 ![AppInsight Architecture](AppInsightArchitecture.png)
 
+###### Smart Detection
+
+Smart detection automatically warns you of **potential performance problems and failure anomalies** in your web application. It performs proactive analysis of the telemetry that your app sends to Application Insights.
+
+You can discover detections in two ways:
+
+- You receive an email from Application Insights.
+- The smart detection blade in Application Insights. Select Smart detection under the Investigate menu to see a list of recent detections
+
+###### Profiler
+
+Azure Application Insights Profiler provides performance traces for applications that are running in production in Azure. Profiler captures the data automatically at scale without negatively affecting your users.
+
+![GUI View of Application Insights Profiler](GUIApplicationInsightsProfiler.png)
+
 #### New Relic
 
 The New Relic monitoring platform, now dubbed New Relic One, is one of many agent-based monitoring tools available on the market.
@@ -654,6 +752,53 @@ With common services such as Apache Web Server, Sumo Logic already knows what fa
 
 ### Create feedback loop from platform monitoring tools (e.g., Azure Diagnostics extension, Log Analytics agent, Azure Platform Logs, Event Grid)
 
+#### Azure Diagnostics extension
+
+Azure Diagnostics extension is an agent in Azure Monitor that collects monitoring data from the guest operating system of Azure compute resources including virtual machines.
+
+The following tables list the data that can be collected by the Windows and Linux diagnostics extension.
+
+- Windows diagnostics extension (WAD):
+  - *Windows Event logs: Events from Windows event log.
+  - *Performance counters*: Numerical values measuring performance of different aspects of operating system and workloads. *(60-second sample)*
+  - *IIS Logs*: Usage information for IIS web sites running on the guest operating system.
+  - *Application logs*: Trace messages written by your application.
+  - *.NET EventSource logs*: Code writing events using the .NET EventSource class.
+  - *Manifest based ETW logs*: Event Tracing for Windows events generated by any process.
+  - *Crash dumps (logs)*: Information about the state of the process if an application crashes.
+  - *File based logs*: Logs created by your application or service.
+  - *Agent diagnostic logs*: Information about Azure Diagnostics itself.
+- Linux diagnostics extension (LAD):
+  - *Syslog*: Events sent to the Linux event logging system.
+  - *Performance counters*: Numerical values measuring performance of different aspects of operating system and workloads. *(15-second sample)*
+  - *Log files*: Entries sent to a file based log.
+
+The Azure Diagnostic extension for both Windows and Linux always collect data into an Azure Storage account.
+
+You can add the extension for Linux or Windows when you create the VM in Azure. In the **Monitoring** section, you set **OS guest diagnostics** to **On**.
+
+#### Log Analytics agent
+
+The Azure Log Analytics agent collects telemetry from Windows and Linux virtual machines in any cloud, on-premises machines, and those monitored by System Center Operations Manager and sends it collected data to your Log Analytics workspace in Azure Monitor
+
+#### Log Analytics agent vs Azure Diagnostics extension
+
+The key differences to consider are:
+
+Azure Diagnostics Extension can be used only with Azure virtual machines. The Log Analytics agent can be used with virtual machines in Azure, other clouds, and on-premises.
+Azure Diagnostics extension sends data to Azure Storage, Azure Monitor Metrics (Windows only) and Event Hubs. The Log Analytics agent sends data to Azure Monitor Logs.
+The Log Analytics agent is required for solutions, VM insights, and other services such as Azure Security Center.
+
+#### Azure platform logs
+
+Platform logs provide detailed diagnostic and auditing information for Azure resources and the Azure platform they depend on.
+
+Type of platform logs
+
+- **Resource logs**: Provide insight into operations that were performed within an Azure resource (the data plane)
+- **Activity log**: Provides insight into the operations on each Azure resource in the subscription from the outside (the management plane) in addition to updates on Service Health events. Use the Activity Log, to determine the what, who, and when for any write operations (PUT, POST, DELETE) taken on the resources in your subscription. There is a single Activity log for each Azure subscription.
+- **Azure Active Directory logs**: Contains the history of sign-in activity and audit trail of changes made in the Azure Active Directory for a particular tenant.
+
 #### Azure Event Grid
 
 Event Grid aggregates all your events and provides routing from any source to any destination.
@@ -681,6 +826,12 @@ Here are some of the key features of Azure Event Grid:
 - **High throughput**: Build high-volume workloads on Event Grid.
 - **Built-in Events**: Get up and running quickly with resource-defined built-in events.
 - **Custom Events**: Use Event Grid to route, filter, and reliably deliver custom events in your app.
+
+#### Side Note: Boot Diagnostics
+
+Boot diagnostics is a debugging feature for Azure virtual machines (VM) that allows diagnosis of VM boot failures. Boot diagnostics enables a user to observe the state of their VM as it is booting up by collecting serial log information and screenshots.
+
+> *You need a storage account to store boot diagnostics data, the boot screenshots, and logs.*
 
 ### Manage Access control to the monitoring platform
 
@@ -733,3 +884,10 @@ RBAC uses an **allow model** for access. When you are assigned to a role, RBAC a
 
 Resource locks are a setting that can be applied to any resource to block modification or deletion. Resource locks can set to either **Delete** or **Read-only**. **Delete** will allow all operations against the resource but block the ability to delete it. **Read-only** will only allow read activities to be performed against it, blocking any modification or deletion of the resource.
 > *Applying Read-only can lead to unexpected results because some operations that seem like read operations actually require additional actions.*
+
+To make the protection process more robust, you can combine resource locks with Azure Blueprints. Azure Blueprints enables you to define the set of standard Azure resources that your organization requires.
+
+To Do:
+
+- https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-dynamic-thresholds
+- https://docs.microsoft.com/en-us/azure/automation/automation-create-alert-triggered-runbook
