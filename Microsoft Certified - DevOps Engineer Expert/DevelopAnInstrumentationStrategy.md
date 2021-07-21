@@ -178,7 +178,7 @@ In order to increase the performance, we can use telemetry to either:
 - **scale up**: is the process where you increase the capacity of a given instance.
 - **scale out**: is the process where you decrease the capacity of a given instance.
 
-![Scale In/Out](Scale-in-out.png)
+![Scale In/Out](./Images/Scale-in-out.png)
 
 With **autoscale**, you no longer have to worry about scaling services manually. Instead, you can set a **minimum and maximum threshold of** instances. You can scale based on specific metrics like queue length or CPU utilization.
 
@@ -267,7 +267,7 @@ Calls between services in different physical locations will still have network l
 
 Depending on the communication needs of an application, more round trips might be required. Each round trip comes with a latency tax, and each round trip adds to the overall latency.
 
-![Network Latency](NetworkLatency.png)
+![Network Latency](./Images/NetworkLatency.png)
 
 Apart from latency, applications may also have strict **bandwidth requirements**, particularly those that deal with rich multimedia content such as audio and video
 
@@ -275,7 +275,7 @@ Apart from latency, applications may also have strict **bandwidth requirements**
 
 Most cloud applications are large, distributed systems that often rely on parallelization to reduce latency. A common technique is to fan out a request received at a root node (for example, a front-end web server) to many leaf nodes (back-end compute servers).
 
-![Tail Latency](TailLatency.png)
+![Tail Latency](./Images/TailLatency.png)
 
 For services that are expected to be "responsive" to retain their user base, heuristics show that responses are expected within 100 ms. As the number of servers required to resolve a query increases, **the overall time often depends on the worst-performing response from a leaf node to a root node.**
 
@@ -313,7 +313,7 @@ Some of the common techniques to deal with this variability are:
   - Use a CDN to cache content close to users
   - Use ExpressRoute for connectivity from on-premises to Azure
 
-![ExpressRoute Connection](ExpressRouteConnection.png)
+![ExpressRoute Connection](./Images/ExpressRouteConnection.png)
 
 #### Storage Performance
 
@@ -346,7 +346,7 @@ For instance, Azure Cache for Redis is a caching service on Azure that stores da
 
 Polyglot persistence is the use of **different data storage technologies** to handle your storage requirements.
 
-![Polyglot Persistence](PolyglotPersistence.png)
+![Polyglot Persistence](./Images/PolyglotPersistence.png)
 
 #### Application Performance
 
@@ -453,7 +453,7 @@ The User Flows tool visualizes how users navigate between the pages and features
 - Where are the places that users churn most from your site?
 - Are there places where users repeat the same action over and over?
 
-![Application Insights UserFlow GUI](ApplicationInsightsUserFlowGUI.png)
+![Application Insights UserFlow GUI](./Images/ApplicationInsightsUserFlowGUI.png)
 
 #### Funnels
 
@@ -461,7 +461,6 @@ Understanding the customer experience is of the utmost importance to your busine
 The progression through a series of steps in a web application is known as a **funnel**. You can use Azure Application Insights Funnels to gain insights into your users, and monitor step-by-step conversion rates.
 
 Before you create your funnel, **decide on the question you want to answer**
-
 
 ## Integrate logging and monitoring solutions
 
@@ -475,7 +474,7 @@ Monitoring is as important in mission-critical solutions deployed to the cloud a
 - **Metrics**: Values that represent the relative health, stability, and availability of a service or application or the infrastructure that hosts it
 - **Traces**: Records of the paths of execution for programs and services, especially in a highly distributed system, indicating the sequence of instructions that may have triggered, either directly or indirectly, an event
 
-![Instrumentation](Instrumentation.png)
+![Instrumentation](./Images/Instrumentation.png)
 
 #### Logs
 
@@ -507,7 +506,7 @@ Common categories of low-level, IT-related metrics tracked by an APM platform in
 
 Trace-maintenance platforms represent a category of performance-management tool that collect data about the low-level service calls between highly distributed services and functions, especially in containerized environments orchestrated by Kubernetes.
 
-### Azure Areas
+### Azure Areas *(Introduction)*
 
 When it comes to monitoring and analytics on Azure, we can bundle services into three specific areas of focus:
 
@@ -523,13 +522,13 @@ When it comes to monitoring and analytics on Azure, we can bundle services into 
 - **Deep application monitoring**: Take your monitoring capabilities even further by looking deep into your applications to identify performance issues, usage trends, and the overall availability of services you develop and depend on.
   - By using an application performance management tool, you can better detect and diagnose issues that occur within your web apps and services.
 
-![Monitoring Products](MonitoringProductsOverview.png)
+![Monitoring Products](./Images/MonitoringProductsOverview.png)
 
 #### Azure Monitor
 
 Azure Monitor provides a single management point for infrastructure-level logs and monitoring for most of your Azure services.
 
-![Azure Monitor](AzureMonitor.png)
+![Azure Monitor](./Images/AzureMonitor.png)
 
 Azure Monitor collects data from each of the following tiers:
 
@@ -556,13 +555,17 @@ VM insights supports Windows and Linux operating systems on the following machin
 - On-premises virtual machines
 - Virtual machines hosted in another cloud environment
 
-![VMInsightsGUI](VMInsightsGUI.png)
+![VMInsightsGUI](./Images/VMInsightsGUI.png)
+
+#### Side Note: Application Health extension
+
+https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-health-extension#when-to-use-the-application-health-extension
 
 ##### Log Analytics
 
 Centralized logging can help you uncover hidden issues that might be difficult to track down. With Log Analytics, you can query and aggregate data across logs
 
-![Log Analytics](LogAnalytics.png)
+![Log Analytics](./Images/LogAnalytics.png)
 
 For custom logs and metrics, you can use the HTTP Data Collector API to write data to Log Analytics from any REST API client or an Azure Logic App to write data from a custom workflow.
 
@@ -575,7 +578,15 @@ For custom logs and metrics, you can use the HTTP Data Collector API to write da
   - ```dependencies``` table reflects The number of failed dependency calls.
   - The ```dependencies``` table shows the number of logged exceptions.
 
-#### Application performance management
+#### Azure Dashboard
+
+Dashboards are a focused and organized view of your cloud resources in the Azure portal.
+Use dashboards as **a workspace** where you can monitor resources and quickly launch tasks for day-to-day operations.
+Build custom dashboards based on projects, tasks, or user roles, for example.
+
+![Azure Dashboard](./Images/AzureDashboard.png)
+
+#### Application Performance Management
 
 Deep application issues are often tricky to track down. This type of scenario is when it can be beneficial to integrate telemetry into your application by using an **application performance management (APM) solution**.
 
@@ -596,7 +607,7 @@ You can enable **client-side instrumentation** for an app by including a standar
 
 >*Note that runtime instrumentation and automatic client-side instrumentation is supported only on Windows web apps.*
 
-![ApplicationInsightsGUI](ApplicationInsightsGUI.png)
+![ApplicationInsightsGUI](./Images/ApplicationInsightsGUI.png)
 
 ##### Availability Tests
 
@@ -631,7 +642,7 @@ Azure SQL Analytics is an advanced cloud monitoring solution for monitoring perf
 
 It uses Azure Diagnostic metrics along with Azure Monitor views to present data about all your Azure SQL databases in a single Log Analytics workspace.
 
-![SQL Database View](SQLDatabaseView.png)
+![SQL Database View](./Images/SQLDatabaseView.png)
 
 *Note that you must enable proper metrics or logs on your SQL resources to be streamed to Log Analytics workspace.*
 
@@ -643,7 +654,7 @@ Intelligent Insights uses built-in intelligence to continuously monitor database
 
 Intelligent Insights analyzes database performance by **comparing the database workload from the last hour with the past seven-day baseline** workload.
 
-![Intelligent Insights Concept](IntelligentInsightsConcept.png)
+![Intelligent Insights Concept](./Images/IntelligentInsightsConcept.png)
 
 ### Configure and integrate container monitoring (Azure Monitor, Prometheus, etc.)
 
@@ -666,7 +677,7 @@ Container insights is a feature designed to monitor the performance of container
 - Azure Red Hat OpenShift
 - Azure Arc enabled Kubernetes (preview)
 
-![Container Insights Architecture](ContainerInsightsArchitecture.png)
+![Container Insights Architecture](./Images/ContainerInsightsArchitecture.png)
 
 #### Prometheus
 
@@ -675,7 +686,7 @@ Prometheus uses a **time series database**
 
 Prometheus is now marshaled by the Cloud Native Computing Foundation, the home of Kubernetes.
 
-![Prometheus](Prometheus.png)
+![Prometheus](./Images/Prometheus.png)
 
 ### Configure and integrate with monitoring tools (Azure Monitor Application Insights, Dynatrace, New Relic, Naggios, Zabbix)
 
@@ -684,6 +695,8 @@ Prometheus is now marshaled by the Cloud Native Computing Foundation, the home o
 Application Insights is represented in Azure as a resource deployed to one of your subscriptions.
 
 To send telemetry data to an Application Insights resource from an app, you need to configure the app with the **instrumentation key** of the Application Insights resource.
+
+![Application Insights Data Model](./Images/ApplicationInsightsDataModel.png)
 
 ##### Visualizations
 
@@ -696,7 +709,7 @@ By viewing an Application Insights resource in the Azure portal, you can visuali
 - **Application Map**: Displays the components of an application and how they link to each other. You can use the data shown with each component to diagnose performance bottlenecks and failure hotspots.
 - **Usage analysis**: Information about your app's users. For example, you can see numbers of unique users and sessions and information about user retention.
 
-![AppInsight Architecture](AppInsightArchitecture.png)
+![AppInsight Architecture](./Images/AppInsightArchitecture.png)
 
 ###### Smart Detection
 
@@ -711,7 +724,19 @@ You can discover detections in two ways:
 
 Azure Application Insights Profiler provides performance traces for applications that are running in production in Azure. Profiler captures the data automatically at scale without negatively affecting your users.
 
-![GUI View of Application Insights Profiler](GUIApplicationInsightsProfiler.png)
+![GUI View of Application Insights Profiler](./Images/GUIApplicationInsightsProfiler.png)
+
+###### Sampling
+
+**Sampling** is the recommended way to reduce telemetry traffic, data costs, and storage costs, while preserving a statistically correct analysis of application data.
+
+Sampling also helps you avoid Application Insights **throttling your telemetry**.
+
+There are three different types of sampling:
+
+- **Adaptive sampling**: automatically adjusts the volume of telemetry sent from the SDK in your ASP.NET/ASP.NET Core app, and from Azure Functions. This is the default sampling when you use the ASP.NET or ASP.NET Core SDK.
+- **Fixed-rate sampling**: reduces the volume of telemetry sent from both your ASP.NET or ASP.NET Core or Java server and from your users' browsers. You set the rate. The client and server will synchronize their sampling so that, in Search, you can navigate between related page views and requests.
+- **Ingestion sampling**: happens at the Application Insights service endpoint. It discards some of the telemetry that arrives from your app, at a sampling rate that you set. It doesn't reduce telemetry traffic sent from your app, but helps you keep within your monthly quota.
 
 #### New Relic
 
@@ -724,11 +749,11 @@ This platform utilizes the following classes of agents:
 - **Browser agent**: A segment or "snippet" of JavaScript code attached to a Web page by way of an HTML tag.
 - **Infrastructure agent**: Installed on a remote machine, or on the home server itself (either of which may be a VM) so that it's launched at startup.
 
-![New Relic](NewRelic.png)
+![New Relic](./Images/NewRelic.png)
 
 Insights is New Relic's brand for the component that analyzes collected data, generates reports and alerts, and projects dashboards.
 
-![New Relic GUI](NewRelicGUI.png)
+![New Relic GUI](./Images/NewRelicGUI.png)
 
 #### Agentless Monitoring Platforms
 
@@ -748,9 +773,21 @@ Sumo Logic is one example of an agentless monitoring platform. It is based on a 
 
 With common services such as Apache Web Server, Sumo Logic already knows what factors to look for and can generate a suitable dashboard in just a few seconds.
 
-![Sumo Logic GUI](SumoLogicGUI.png)
+![Sumo Logic GUI](./Images/SumoLogicGUI.png)
 
 ### Create feedback loop from platform monitoring tools (e.g., Azure Diagnostics extension, Log Analytics agent, Azure Platform Logs, Event Grid)
+
+#### Summary of agents
+
+##### Windows
+
+||Azure Monitor agent|Diagnostics extension (WAD)|Log Analytics agent|Dependency agent|
+|-|-|-|-|-|
+|Environments supported|Azure<br>Other cloud (Azure Arc)<br>On-premises (Azure Arc)|Azure|Azure<br>Other Cloud<br>On-premises|Azure<br>Other Cloud<br>On-premises|
+|Agent requirements|None|None|None|Requires Log Analytics agent|
+|Data collected|Event Logs<br>Performance|Event Logs<br>ETW events<br>Performance<br>File based logs<br>IIS logs<br>.NET app logs<br>Crash dumps<br>Agent diagnostic logs|Event Logs<br>Performance<br>File based logs<br>IIS logs<br>Insights and solutions<br>Other services|Process dependencies<br>Network connection metrics|
+|Data sent to|Azure Monitor Logs<br>Azure Monitor Metrics|Azure Storage<br>|Azure Monitor Metrics<br>Event Hub|Azure Monitor Logs|Azure Monitor Logs (through Log Analytics agent)|
+|Services and features supported|Log Analytics<br>Metrics explorer|Metrics explorer|VM insights<br>Log Analytics<br>Azure Automation<br>Azure Security Center<br>Azure Sentinel|VM insights<br>Service Map|
 
 #### Azure Diagnostics extension
 
@@ -804,7 +841,7 @@ Type of platform logs
 Event Grid aggregates all your events and provides routing from any source to any destination.
 Event Grid is a service that manages the routing and delivery of events from many sources and subscribers.
 
-![EventGrid Architecture](EventGridArchitecture.png)
+![EventGrid Architecture](./Images/EventGridArchitecture.png)
 
 ##### Concepts
 
@@ -835,9 +872,15 @@ Boot diagnostics is a debugging feature for Azure virtual machines (VM) that all
 
 ### Manage Access control to the monitoring platform
 
-### Resource Groups
+#### RBAC
 
-Resource groups are a fundamental element of the Azure platform. A resource group is a logical container for resources deployed on Azure.µ
+RBAC provides fine-grained access management for Azure resources, enabling you to grant users the specific rights they need to perform their jobs. RBAC is considered a core service and is included with all subscription levels at no cost.
+
+RBAC uses an **allow model** for access. When you are assigned to a role, RBAC allows you to perform specific actions, such as read, write, or delete.
+
+#### Resource Groups
+
+Resource groups are a fundamental element of the Azure platform. A resource group is a logical container for resources deployed on Azure.
 
 Note that:
 
@@ -850,15 +893,15 @@ So how can you use resource groups to your advantage in your new organization? T
 - **Consistent naming convention**: You can start with using an understandable naming convention.
 - **Organizing principles**
 
-![Resource Group Organizing 1](RGOrganizing1.png)
+![Resource Group Organizing 1](./Images/RGOrganizing1.png)
 
-![Resource Group Organizing 2](RGOrganizing2.png)
+![Resource Group Organizing 2](./Images/RGOrganizing2.png)
 
 - **Organizing for authorization**
 - **Organizing for life cycle**
 - **Organizing for billing**
 
-### Tagging
+#### Tagging
 
 Tags are name/value pairs of text data that you can apply to resources and resource groups. Tags allow you to associate custom details about your resource, in addition to the standard Azure properties a resource has the following properties:
 
@@ -874,20 +917,7 @@ A resource can have up to **50 tags**. The name is limited to 512 characters for
 
 Azure Policy is a service you can use to create, assign, and manage policies. These policies apply and enforce rules that your resources need to follow.
 
-### RBAC
-
-RBAC provides fine-grained access management for Azure resources, enabling you to grant users the specific rights they need to perform their jobs. RBAC is considered a core service and is included with all subscription levels at no cost.
-
-RBAC uses an **allow model** for access. When you are assigned to a role, RBAC allows you to perform specific actions, such as read, write, or delete.
-
-### Resource Locks
-
-Resource locks are a setting that can be applied to any resource to block modification or deletion. Resource locks can set to either **Delete** or **Read-only**. **Delete** will allow all operations against the resource but block the ability to delete it. **Read-only** will only allow read activities to be performed against it, blocking any modification or deletion of the resource.
-> *Applying Read-only can lead to unexpected results because some operations that seem like read operations actually require additional actions.*
-
-To make the protection process more robust, you can combine resource locks with Azure Blueprints. Azure Blueprints enables you to define the set of standard Azure resources that your organization requires.
-
 To Do:
 
-- https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-dynamic-thresholds
-- https://docs.microsoft.com/en-us/azure/automation/automation-create-alert-triggered-runbook
+- <https://docs.microsoft.com/en-us/azure/azure-monitor/platform/alerts-dynamic-thresholds>
+- <https://docs.microsoft.com/en-us/azure/automation/automation-create-alert-triggered-runbook>
