@@ -1,3 +1,37 @@
+## Introduction
+
+The deployment of a cloud application is an iterative process that starts from the end of development and continues right through to the release of the application on the production resources:
+
+![Application Deployement](./Images/ApplicationDeployement.png)
+
+Changes to the code are maintained through a code repository system.
+After passing through code changes, reviews, and approvals, the code can be pipelined into the testing, staging, and production phases. This can be done in multiple ways:
+
+- **Custom scripts**: Developers can use custom scripts to pull the latest version of the code and run specific commands to build the application and bring it into a production state.
+- **Pre-baked virtual machine images**: Developers can also provision and configure a virtual machine with all the required environment and software to deploy their application.
+- **Continuous integration systems**: In order to simplify the various tasks that are involved in deployment, continuous integration (CI) tools can be used to automate tasks (such as retrieval of the latest version from a repository, building application binaries, and running test cases) that need to be completed in the various machines that make up the production infrastructure.
+
+### Manage downtime
+
+Applications that are designed for continuous integration may be able to perform these changes live on production systems with minimal or no interruption to the application's clients.
+
+### Redundancy and fault tolerance
+
+Best practices in application deployment typically assume that cloud infrastructure is ephemeral and may be unavailable or change at any moment.
+
+Well-designed applications should ideally use service APIs to query and discover resources and connect to them in a dynamic fashion.
+
+### Security and hardening in production
+
+Some very basic principles that should be followed include:
+
+- **All software should be switched to production mode**: Most software supports "debug mode" for local testing and "production mode" for actual deployments.
+- **Access to nonpublic services should be restricted to certain internal IP addresses for admin access**: Make sure that administrators cannot directly log in to a critical resource from the internet without visiting an internal launchpad.
+- **Follow the principle of least privilege**: Run all services as the least privileged user that can perform the required role. Restrict the use of root credentials to specific manual logins by system administrators who need to debug or configure some critical problems in the system.
+- **Use well-known defensive techniques and tools**: Use intrusion detection and prevention systems (IDS/IPS), security information and event management (SIEM), application-layer firewalls, and anti-malware systems.
+- **Vulnerability Management**: Set up a patching schedule that coincides with patch releases by the vendor of the systems that you use. Often, vendors like Microsoft have a fixed release cycle for patches.
+
+
 ## Introduction to Lean product development
 
 ### Introduction
@@ -235,16 +269,83 @@ A hosting service is often called a **package repository** or **package registry
 
 Here are popular hosting services for the package types we just described:
 
-- **NuGet Gallery**:
-- **NPM**:
-- **Maven Central Repository**:
-- **Docker Hub**:
+- **NuGet Gallery**: NuGet packages are used for .NET code artifacts. These artifacts include .NET assemblies and related files, tooling and, sometimes, metadata. 
+- **NPM**: An NPM package is used for JavaScript. An NPM package is a file or folder that contains JavaScript files and a package.json file that describes the metadata of the package.
+- **Maven Central Repository**: Maven is used for Java-based projects. Each package has a Project Object Model file that describes the metadata of the project, and is the basic unit for defining a package and working with it.
+- **Docker Hub**: Docker packages are called images and contain complete, self-contained deployments.
 
 A **package feed** refers to your package repository server. When you host packages behind the firewall, you can include feeds to your own packages. You can also cache packages that you trust on your network when your systems can't connect to the internet.
+
+#### What elements make up a good dependency management strategy?
+
+- **Standardization**: Standardizing how you declare and resolve dependencies will help your automated release process remain repeatable and predictable.
+- **Packaging formats and sources**: Each dependency should be packaged **using the applicable format** and **stored in a central location**.
+- **Versioning**: You need to **keep track of the changes** that occur over time in dependencies just as you do with your own code.
+
+#### What happens when the package changes?
+
+When you reference a package from your app, you typically **pin**, or specify, the version of that package you want to use.
+
+Many frameworks enable you to **specify allowable ranges of package versions to install**.
+Some also enable you to specify wildcards, which we call a floating version.
 
 #### GitHub Packages
 
 #### Azure Artifacts
+
+Azure Artifacts is a **repository** in your Azure DevOps organization where you can **manage the dependencies for your codebase**.
+
+Azure Artifacts enables developers to share and consume packages from different **feeds** and **public registries**. 
+
+Azure Artifacts supports multiple package types such as NuGet, Npm, Python, Maven, and Universal Packages.
+
+Azure Artifacts is free for every organization **up to 2 GiB of storage**.
+
+##### Create a package
+
+![Azure Artifacts Whiteboard](./Images/AzureArtifactsWhiteboard.png)
+
+1. Create a project in Azure Artifacts in Azure DevOps.
+2. Create a pipeline in Azure Pipelines that connects to the GitHub repo for the package code. Then the pipeline builds the code, packages it, and pushes the package to Azure Artifacts
+3. Update the app that consumes this package to point to the created Azure Artifacts feed.
+4. Update the pipeline that creates the app.
+
+##### Versionning
+
+Azure Artifacts associates a quality level with each package in its feeds, as well as distinguishing between prerelease and release versions.
+Azure Artifacts also uses a descriptor to include additional metadata from the Azure Artifacts feed. A common use for views is to share package versions that have been tested, validated, or deployed but hold back packages still under development and not ready for public consumption.
+
+Feeds in Azure Artifacts have three different views by default. These views are added at the moment a new feed is created. The three views are:
+
+- **Release**: The @release view contains all packages that are considered official releases.
+- **Prerelease**: The @prerelease view contains all packages that have a label in their version number.
+- **Local**: The @local view contains all release and prerelease packages as well as the packages downloaded from upstream sources.
+
+##### Package security
+
+**Ensuring the security of your packages is as important as ensuring the security of the rest of your code.**
+
+One aspect of package security is securing access to the package feeds where a feed, in Azure Artifacts, is where you store packages.
+Setting permissions on the feed allows you to share your packages with as many or as few people as your scenario
+
+###### Feed permissions
+
+Feeds have four levels of access:
+
+- **Readers**: 
+  - *List, install, and restore packages*
+- **Collaborators**: Readers + 
+  - *Save packages from upstream sources*
+- **Contributors**: Collaborators +
+  - *Push packages*
+  - *Unlist/deprecate packages*
+  - *Promote a package to a view*
+- **Owners**: Contributors +
+  - *Delete/unpublish package*
+  - *Add/remove upstream sources*
+  - *Edit feed permissions*
+  - *Allow external package versions*
+
 
 #### Azure Automation Runbooks Gallery
 
@@ -277,6 +378,26 @@ Within Artifcatory, binaries are stored by their checksums, thus stored only onc
 Artifactory weighs about **~37M**.
 
 ### Design an Azure Artifacts implementation including linked feeds
+
+Artifacts Feeds are organizational constructs that **allow you to store, manage, and group your packages** and **control who to share it** with.
+
+Feeds are **not package-type dependent**. You can store all the following package types in a single feed: npm, NuGet, Maven, Python, and Universal packages.
+
+There are multiple feeds types:
+
+- **Organization-scoped feeds**: scoped to the organization
+- **Project-scoped feeds**: scoped to the project
+- **Public feeds**: used to share your packages publicly with anyone on the Internet. Public feeds are project-scoped feeds and it will inherit the visibility settings of the hosting project.
+
+There some important things to note regarding public feeds:
+
+- Public feeds can only be created inside of public projects.
+- Public feeds aren't intended as a replacement for existing package management platforms (NuGet.org, npmjs.com, etc.).
+- Public feeds cannot have upstream sources.
+- Public users cannot currently download universal packages. All other package types are supported for public access.
+
+
+**Only project-scoped feeds can be made public.**
 
 ### Design versioning strategy for code assets (e.g., SemVer, date based)
 
@@ -394,9 +515,44 @@ In the build step that writes information about the build to a file, notice thes
 
 ### Monitor pipeline health (failure rate, duration, flaky tests)
 
+#### Flaky Test Management
+
+Productivity for developers relies on the ability of tests to find real problems with the code under development or update in a timely and reliable fashion. Flaky tests present a barrier to finding real problems, since the failures often don't relate to the changes being tested.
+
+Flaky test management provides the following benefits:
+
+- **Detection**: Auto detection of flaky test with rerun or extensibility to plug in your own custom detection method
+- **Management of flakiness** Once a test is marked as flaky, the data is available for all pipelines for that branch
+
+Report on flaky tests - Ability to choose if you want to prevent build failures caused by flaky tests, or use the flaky tag only for troubleshooting
+
+Resolution - Manual bug-creation or manual marking and unmarking test as flaky based on your analysis
+
+Close the loop - Reset flaky test as a result of bug resolution / manual input
+
+
+
 <https://docs.microsoft.com/en-us/azure/devops/pipelines/test/flaky-test-management?view=azure-devops>
 
 ### Optimize build (cost, time, performance, reliability)
+
+#### Test Impact Analysis
+
+Continuous Integration (CI) is a key practice in the industry. 
+Integrations are **frequent**, and verified with an automated build that runs regression tests to detect integration errors as soon as possible. 
+However, as the codebase grows and matures, its regression test suite **tends to grow as well** - to the extent that running a full regression test might require hours.
+This slows down the frequency of integrations, and ultimately defeats the purpose of continuous integration.
+
+Test Impact Analysis performs incremental validation by automatic test selection. **It will automatically select only the subset of tests required to validate the code being committed.**
+
+![Test Impact Analysis](TestImpactAnalysis.png)
+
+Test Impact Analysis has:
+
+- **A robust test selection mechanism**: It includes existing impacted tests, previously failing tests, and newly added tests.
+- **Safe fallback**: For commits and scenarios that TIA cannot understand, it will fall back to running all tests. TIA is currently scoped to only managed code, and single machine topology. So, for example, if the code commit contains changes to HTML or CSS files, it cannot reason about them and will fall back to running all tests.
+- **Configurable overrides**: You can run all tests at a configured periodicity.
+
 
 <https://docs.microsoft.com/en-us/azure/devops/pipelines/test/test-glossary?view=azure-devops>
 
@@ -408,4 +564,37 @@ In the build step that writes information about the build to a file, notice thes
 
 ### Manage self-hosted build agents (VM templates, containerization, etc.)
 
+Microsoft-hosted agents have a few limitations, which include:
+
+- **Build duration**: A build job can run for up to six hours.
+- **Disk space**: Hosted agents provide a fixed amount of storage for your sources and your build outputs. This may not be enough storage.
+- **CPU, memory, and network**: Hosted agents run on Microsoft Azure general purpose VMs. Standard_DS2_v2 describes the CPU, memory, and network characteristics you can expect.
+- **Interactivity**: You can't sign in to a hosted agent.
+- **File shares**: You can't drop build artifacts to Universal Naming Convention (UNC) file shares.
+
+When you bring your own build agent, you can decide whether to perform a clean build each time or perform an incremental build. With an incremental build, you build upon existing build tools and compiled code.
+As a tradeoff, because the build infrastructure is yours, it's your responsibility to ensure that your build agents contain the latest software and security patches.
+
+#### Set up a private build agent
+
+A private build agent contains the software that's required to build your applications. It also contains agent software, which enables the system to connect to Azure Pipelines and receive build jobs.
+
+There are multiple ways of doing it:
+
+- **Set up the build agent manually**: You bring up the system, sign in, and interactively install your build tools and the agent software.
+- **Automate the process**: You bring up the system and run a script or tool to install your build tools and the agent software. You can configure the agent after the system comes online or during the provisioning process.
+- **Create an image**: You create an image, or snapshot, of a configured environment. You then use the image to create as many identical systems as you need in your pool.
+
+**Packer** by HashiCorp is a popular tool for creating images.
+
+#### Personal Access Token
+
+For your build agent to register itself with Azure DevOps, you need a way for it to authenticate itself.
+A personal access token, or PAT, is an alternative to a password. You can use the PAT to authenticate with services such as Azure DevOps.
+
+
 ### Create reuseable build subsystems (YAML templates, Task Groups, Variable Groups, etc.)
+
+https://docs.microsoft.com/en-us/azure/devops/pipelines/process/about-resources?view=azure-devops&tabs=yaml
+
+https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml
