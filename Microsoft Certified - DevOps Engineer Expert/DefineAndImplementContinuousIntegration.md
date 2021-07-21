@@ -21,7 +21,7 @@ The most common high level concepts associated with lean product development are
 - **Entrepreneurial system designer**: The lean product development organization makes one person responsible for the engineering and aesthetic design, and market and business success, of the product.
 - **Flow management**
 
-### Value Stream Map 
+### Value Stream Map
 
 a Value Stream Map helps us **measure where a process has value to the customer** and **where it's eating up time without producing any value**.
 
@@ -44,8 +44,8 @@ Activity Ratio help us to pinpoint the areas where there's waste. We want to min
 
 ### Azure Pipelines Introduction
 
-https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/key-pipelines-concepts?view=azure-devops
-https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runs?view=azure-devops
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/key-pipelines-concepts?view=azure-devops>
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runs?view=azure-devops>
 
 ## Design build automation
 
@@ -57,7 +57,7 @@ https://docs.microsoft.com/en-us/azure/devops/pipelines/process/runs?view=azure-
 
 CI encourages developers to share their code and unit tests by merging their changes into a **shared version control repository after every small task completion**.
 
-![Whiteboard of a CI pipeline.png](WhiteboardCIPipeline.png)
+![Whiteboard of a CI pipeline.png](./Images/WhiteboardCIPipeline.png)
 
 - **CI** is the process of automating the build and testing of code every time a team member commits changes to version control.
 - A **pipeline** defines the continuous integration process for the app.
@@ -87,11 +87,11 @@ dotnet test --no-build \
   /p:CoverletOutput=./TestResults/Coverage/
 ```
 
-![Coverage Result](CoverageResult.png)
+![Coverage Result](./Images/CoverageResult.png)
 
 ### Implement quality gates (e.g., code coverage, internationalization, peer review)
 
-https://docs.microsoft.com/en-us/azure/devops/pipelines/release/approvals/?view=azure-devops
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/release/approvals/?view=azure-devops>
 
 ### Design a testing strategy (e.g., integration, load, fuzz, API, chaos)
 
@@ -99,7 +99,7 @@ Testing is one of the fundamental components of DevOps and agile development in 
 
 A main tenet of a DevOps practice to achieve system reliability is the **shift left** principle.
 
-Testing should occur on **both application code and infrastructure code**, and they should both be subject to the same quality controls. 
+Testing should occur on **both application code and infrastructure code**, and they should both be subject to the same quality controls.
 
 #### Automated Testing
 
@@ -121,7 +121,7 @@ But the added benefits are:
 
 When we think about automated testing, it's common to separate tests into layers.
 
-![The Test Pyramid](TestPyramid.png)
+![The Test Pyramid](./Images/TestPyramid.png)
 
 ##### What makes a good test?
 
@@ -130,7 +130,6 @@ When we think about automated testing, it's common to separate tests into layers
 - **Ensure that your tests are repeatable**: Test runs should produce the same results each time, whether you run them on your computer, a coworker's computer, or in the build pipeline.
 - **Keep your tests focused**: A common misconception is that tests are meant to cover code written by others.
 - **Choose the right granularity**
-
 
 ##### Unit Testing
 
@@ -146,6 +145,12 @@ Integration testing determines whether your components **can interact with each 
 
 Integration tests usually take **longer than smoke testing**, and as a consequence, they are sometimes executed less frequently.
 
+##### UI test
+
+Naturally, the quality of the user interface decides the user’s first (and last) impression of a website or app. UI design and functionality make or break the software, which is why developers and testers have increasingly focused on UI testing (User Interface Testing) as an important part of the development blueprint.
+
+**Selenium** is a portable framework for testing web applications. Selenium provides a playback tool for authoring functional tests without the need to learn a test scripting language (Selenium IDE). It also provides a test domain-specific language (Selenese) to write tests in a number of popular programming languages, including C#, Groovy, Java, Perl, PHP, Python, Ruby and Scala.
+
 #### Manual Testing
 
 Manual testing is **much more expensive than automated testing**, and as a consequence it is used less frequently than automated testing.
@@ -154,7 +159,7 @@ Manual testing is **much more expensive than automated testing**, and as a conse
 
 There are many different ways of confirming that the application is doing what it should.
 
-- **Blue/Green deployments**: when deploying a new application version, you can deploy it in parallel to the existing one. 
+- **Blue/Green deployments**: when deploying a new application version, you can deploy it in parallel to the existing one.
 - **Canary releases**: you can expose new functionality of your application (ideally using feature flags) to a select group of users.
 - **A/B testing**: A/B testing is similar to canary release testing, but while canary releases focus on mitigating risk, A/B testing focuses on evaluating the effectiveness of two similar ways of achieving the same goal.
 
@@ -182,7 +187,7 @@ Another critical component of your test strategy should be routine testing of yo
 
 A **package** contains reusable code that other developers can use in their own projects, even though they didn't write it.
 
-For **compiled languages**, a package typically contains the **compiled binary code**, such as .dll files in .NET, or .class files in Java. 
+For **compiled languages**, a package typically contains the **compiled binary code**, such as .dll files in .NET, or .class files in Java.
 
 For languages that are **interpreted** instead of compiled, such as JavaScript or Python, a package might include **source code**.
 
@@ -247,30 +252,29 @@ A **package feed** refers to your package repository server. When you host packa
 
 #### Sonatype Nexus
 
-##### Storage
+##### Storage *(Sonatype Nexus)*
 
 Nexus uses file system to store artifacts and metadata
 
-##### Sizing
+##### Sizing *(Sonatype Nexus)*
 
 Nexus jar weighs about **~13M**
 
 #### Jfrog Artifactory
 
-##### Ease of use
+##### Ease of use *(Jfrog Artifactory)*
 
 Artifactory is intuitive, and easy to work with.
 
-##### Storage
+##### Storage *(Jfrog Artifactory)*
 
 Artifactory uses Derby DB store artifacts and metadata. Artifactory can also be configured to use a handful of RDMBS for artifact storage (MySQL, PostgreSQL, Oracle…) as well as using the file system.
 
 Within Artifcatory, binaries are stored by their checksums, thus stored only once. This way, copy and move operations are cheaper.
 
-##### Sizing
+##### Sizing *(Jfrog Artifactory)*
 
 Artifactory weighs about **~37M**.
-
 
 ### Design an Azure Artifacts implementation including linked feeds
 
@@ -298,13 +302,13 @@ Based on the test results and your current version definitions Greenkeeper will 
 
 #### SemVer
 
-A semantic version number consists of three numbers separate by full stops (or periods). 
+A semantic version number consists of three numbers separate by full stops (or periods).
 
 Here is an example: 2.5.8
 
 |2|5|8|
 |-|-|-|
-|**Breaking** release with multiple changes and additional features. Generally, there are maximum one major update per year. Some of those changes could bring some incompatibility with your current environment|**Feature** release with some additional features. There are multiple **Feature** release within a **Breaking** version. The additional features are normally **backward-compatible**.|**Fixes** are generally developped on a rapid pace in order to correct bugs and to correct vulnerabilities. Those can be updates automatically for some softwares| 
+|**Breaking** release with multiple changes and additional features. Generally, there are maximum one major update per year. Some of those changes could bring some incompatibility with your current environment|**Feature** release with some additional features. There are multiple **Feature** release within a **Breaking** version. The additional features are normally **backward-compatible**.|**Fixes** are generally developped on a rapid pace in order to correct bugs and to correct vulnerabilities. Those can be updates automatically for some softwares|
 |Breaking|Feature|Fix|
 |Not safe for update|safe to update, new features|safe to update, bugfixes|
 
@@ -325,7 +329,7 @@ To build your code or deploy your software you need **at least one agent**.
 
 #### Hosted and Private agents
 
-If your pipelines are in Azure Pipelines, then you've got a convenient option to build and deploy using a Microsoft-hosted agent. 
+If your pipelines are in Azure Pipelines, then you've got a convenient option to build and deploy using a Microsoft-hosted agent.
 
 With Microsoft-hosted agents, maintenance and upgrades are taken care of for you. Each time you run a pipeline, you get a fresh virtual machine. The virtual machine is discarded after one use.
 
@@ -344,9 +348,10 @@ In Azure Pipelines, you can run parallel jobs on Microsoft-hosted infrastructure
 
 1. Determine how many parallel jobs you need: When you find the queue delays are too long, you can purchase additional parallel jobs as needed. A simple rule of thumb is to estimate that you'll need one parallel job for every four to five users in your organization.
 2. Think about your scenario:
-  - If you have multiple teams, and if each of them requires a CI build, you'll likely need a parallel job for each team.
-  - If your CI build trigger applies to multiple branches, you'll likely need a parallel job for each active branch.
-  - If you develop multiple apps by using one organization or server, you'll likely need additional parallel jobs, one to deploy each app at the same time.
+
+- If you have multiple teams, and if each of them requires a CI build, you'll likely need a parallel job for each team.
+- If your CI build trigger applies to multiple branches, you'll likely need a parallel job for each active branch.
+- If you develop multiple apps by using one organization or server, you'll likely need additional parallel jobs, one to deploy each app at the same time.
 
 #### Agent pools
 
@@ -356,10 +361,9 @@ In Azure Pipelines, agent pools are **scoped to the Azure DevOps organization** 
 
 #### Agent queues
 
-
 ### Develop and implement build trigger rules
 
-https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops>
 
 ### Develop build pipelines
 
@@ -390,16 +394,15 @@ In the build step that writes information about the build to a file, notice thes
 
 ### Monitor pipeline health (failure rate, duration, flaky tests)
 
-https://docs.microsoft.com/en-us/azure/devops/pipelines/test/flaky-test-management?view=azure-devops
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/test/flaky-test-management?view=azure-devops>
 
 ### Optimize build (cost, time, performance, reliability)
 
-https://docs.microsoft.com/en-us/azure/devops/pipelines/test/test-glossary?view=azure-devops
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/test/test-glossary?view=azure-devops>
 
-https://docs.microsoft.com/en-us/azure/devops/pipelines/test/test-impact-analysis?view=azure-devops
+<https://docs.microsoft.com/en-us/azure/devops/pipelines/test/test-impact-analysis?view=azure-devops>
 
 ### Analyze CI load to determine build agent configuration and capacity
-
 
 ## Design a process for standardizing builds across organization
 
