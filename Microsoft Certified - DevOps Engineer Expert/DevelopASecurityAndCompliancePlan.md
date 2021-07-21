@@ -177,7 +177,7 @@ Service connections enable you to connect to external and remote services to **e
 
 To manage service connection, within Azure DevOps, open the Service connections page from the project settings page.
 
-![GUI view of AzureDevOpsServiceConnections](/Images/AzureDevOpsServiceConnectionsGUI.png)
+![GUI view of AzureDevOpsServiceConnections](./Images/AzureDevOpsServiceConnectionsGUI.png)
 
 To manage the security for a connection, within Azure DevOps, open the Service connections page from the project settings page.
 Then go to the more options at the top-right corner and choose **Security**.
@@ -284,7 +284,7 @@ Here is how it works:
 2. Dependabot opens pull requests
 3. You review and merge
 
-![GUI view of Dependabot](/Images/DependabotGUI.png)
+![GUI view of Dependabot](./Images/DependabotGUI.png)
 
 #### GitHub Code Scanning
 
@@ -335,9 +335,27 @@ Like many other Version Control Systems, Git has a way to fire off custom script
 
 SonarQube® is an automatic code review tool to detect bugs, vulnerabilities, and code smells in your code.
 
+#### WhiteSource Bolt
+
+WhiteSource is the leader in continuous open source software security and compliance management. WhiteSource integrates into your build process, irrespective of your programming languages, build tools, or development environments. It works automatically, continuously, and silently in the background, checking the security, licensing, and quality of your open source components against WhiteSource constantly-updated deﬁnitive database of open source repositories.
+
+WhiteSource provides WhiteSource Bolt, a lightweight open source security and management solution developed specifically for integration with Azure DevOps and Azure DevOps Server.
+
+The security dashboard shows the vulnerability of the build. This report shows the list of all vulnerable open source components with **Vulnerability Score**, **Vulnerable Libraries**, **Severity Distribution**.
+
+![WhiteSource Bolt Dashboard](./Images/WhiteSourceBoltDashboard.png)
+
 ## Design governance enforcement mechanisms
 
 ### Protect against security threats
+
+#### Secure DevOps Kit for Azure
+
+The Secure DevOps Kit for Azure (AzSK) was created by the Core Services Engineering & Operations (CSEO) division at Microsoft, to help accelerate Microsoft IT's adoption of Azure.
+
+##### Continuous Assurance
+
+The basic idea behind Continuous Assurance (CA) is to setup the ability to check for "drift" from what is considered a secure snapshot of a system.
 
 #### Tailwind Traders
 
@@ -415,7 +433,7 @@ You’ll be charged for every image that gets scanned – once per image.
 The scan completes typically within **2 minutes**, but it might take up to 15 minutes. Findings are made available as **Security Center recommendations**
 Results are available within the *Sub-Assessments Rest API* or through the *Azure Resource Graph (ARG)*
 
-![Azure Defender For Containers](/Images/AzureDefenderForContainers.png)
+![Azure Defender For Containers](.//Images/AzureDefenderForContainers.png)
 
 #### Qualys Container Scanning Connector for Azure DevOps
 
@@ -453,13 +471,20 @@ You can set up an ACR task to **track a dependency on a base image** when it bui
 
 <https://docs.microsoft.com/en-us/learn/modules/build-cloud-governance-strategy-azure/4-control-access-azure-rbac>
 
+### Implement Resource Locks
+
+Resource locks are a setting that can be applied to any resource to block modification or deletion. Resource locks can set to either **Delete** or **Read-only**. **Delete** will allow all operations against the resource but block the ability to delete it. **Read-only** will only allow read activities to be performed against it, blocking any modification or deletion of the resource.
+> *Applying Read-only can lead to unexpected results because some operations that seem like read operations actually require additional actions.*
+
+To make the protection process more robust, you can combine resource locks with Azure Blueprints. Azure Blueprints enables you to define the set of standard Azure resources that your organization requires.
+
 ### Implement dedicated physical server
 
 Some organizations must follow regulatory compliance that requires them to be the only customer using the physical machine that hosts their virtual machines.
 
 Azure Dedicated Host provides dedicated physical servers to host your Azure VMs for Windows and Linux.
 
-![Dedicated Hosts](/Images/DedicatedHosts.png)
+![Dedicated Hosts](./Images/DedicatedHosts.png)
 
 Azure Dedicated Host:
 
@@ -485,6 +510,5 @@ There are three main aspects to consider when you create and manage subscription
 <https://docs.microsoft.com/en-us/learn/modules/control-authentication-with-apim/>
 
 ### Cloud Adoption Framework for Azure
-
 
 <https://docs.microsoft.com/en-us/learn/modules/build-cloud-governance-strategy-azure/2-accelerate-cloud-adoption-framework>
